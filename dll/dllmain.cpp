@@ -215,7 +215,7 @@ DWORD WINAPI doPatching(LPVOID lpParam)
         Sleep(500); //wait up to 30 seconds total (slow PCs?). this really only applies to sekiro where steam needs to deobfuscate the .exe. other games should work right away.
     }
     if (!good) {
-        MessageBoxA(0, "Patching failed. You may be running an unsupported version.", "", 0);
+        MessageBoxA(0, "No-logo patch failed. You may be running an unsupported version.", "", 0);
         return 1;
     }
 #if _DEBUG
@@ -226,6 +226,56 @@ DWORD WINAPI doPatching(LPVOID lpParam)
         MessageBoxA(0, buf, "", 0);
     }
 #endif
+    if (Game == GAME::DS1)
+    {//no DS1 fix needed
+        return 0;
+    }
+    //patch succeeded, wait a moment before applying stutter fix; the target class needs to have initialised.
+    Sleep(5000);
+    
+    good = false;
+    int usrInputOffset = 0;
+    int flagOffset = 0;
+    auto baseAddr = GetModuleHandle(NULL);
+    if (Game == GAME::DS3) {
+        //for 1.15. TODO: support or at least recognise other patches
+        usrInputOffset = 0x494E9D8;
+        flagOffset = 0x24b;
+    }
+    else if (Game == GAME::SEKIRO) {
+        //for 1.06. TODO: support or at least recognise other patches
+        usrInputOffset = 0x3F42B28;
+        flagOffset = 0x23b;
+    }
+    else if (Game == GAME::ELDENRING) {
+        //for 1.05. TODO: support or at least recognise other patches
+        usrInputOffset = 0x44F5828;
+        flagOffset = 0x88b;
+    }
+
+    if (usrInputOffset == 0)
+    {
+        return 1; //game unsupported
+    }
+
+    auto usrInputPtr = (uint8_t**)((DWORD64)baseAddr + usrInputOffset);
+    while ((DWORD64)*usrInputPtr < (DWORD64)baseAddr || (DWORD64)*usrInputPtr > 0x800000000000LL)
+    {//less than base address is possible but is unlikely
+        Sleep(500);
+    }
+    
+    auto ptrFlag = *usrInputPtr + flagOffset;
+    if (*ptrFlag == 0)
+    {
+        *ptrFlag = 1;
+        good = true;
+    }
+    
+    if (good)
+    {
+        //Beep(2000, 250); //annoying AF
+        PlaySound(TEXT("SystemStart"), NULL, SND_SYNC);
+    }
 
     return 0;
 }
