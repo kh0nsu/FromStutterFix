@@ -1,12 +1,26 @@
 # FromStutterFix
 
-This program will apply a fix for a certain type of stutter in FromSoft games.
+This tool will apply a fix for a certain type of stutter in FromSoft games.
+
+Only the current patch is supported for the moment.
 
 ## Usage
 
+There is a standalone .exe version which doesn't touch the game files, but needs to be run manually each time. There is also a .dll version which loads automatically, but may be more difficult to use with mods. Both do the same thing.
+
+Note: EAC needs to be disabled for Elden Ring.
+
+### EXE Version
+
 Run the game, then run the program. It will say "flag set" if it worked. Close the program. The fix will last until you restart the game.
 
-EAC needs to be disabled for Elden Ring.
+### DLL Version
+
+Place the DINPUT8.dll in the game directory. Run the game. After a delay, a chime sound will be played if the fix was applied successfully.
+
+To uninstall, delete the DINPUT8.dll.
+
+Note: This version also includes the logo screen skip, to avoid needing to choose between them or chain-load DLLs.
 
 ## How does it work?
 
@@ -29,7 +43,3 @@ Cool, but something is probably still wrong with your PC. Check if anything look
 ## I still get stutters at certain points in the game
 
 Stutters at loading triggers probably can't be fixed, except by From, or a miracle patch to the rendering pipeline. There may be other sources of stutter also.
-
-## Can you make it a DLL that loads automatically?
-
-I don't know how. If someone wants to do that, that would be great.
