@@ -218,14 +218,12 @@ DWORD WINAPI doPatching(LPVOID lpParam)
         MessageBoxA(0, "No-logo patch failed. You may be running an unsupported version.", "", 0);
         return 1;
     }
-#if _DEBUG
     else
     {
-        char buf[64];
-        sprintf(buf, "Patch success, i %d", i);
-        MessageBoxA(0, buf, "", 0);
-    }
+#if _DEBUG
+        printf("Patch success, i %d\r\n", i);
 #endif
+    }
     if (Game == GAME::DS1)
     {//no DS1 fix needed
         return 0;
@@ -233,7 +231,6 @@ DWORD WINAPI doPatching(LPVOID lpParam)
     //patch succeeded, wait a moment before applying stutter fix; the target class needs to have initialised.
     Sleep(5000);
     
-    good = false;
     int usrInputOffset = 0;
     int flagOffset = 0;
     auto baseAddr = GetModuleHandle(NULL);
@@ -255,12 +252,20 @@ DWORD WINAPI doPatching(LPVOID lpParam)
 
     if (usrInputOffset == 0)
     {
-        return 1; //game unsupported
+        MessageBoxA(0, "Stutter fix failed. You may be running an unsupported version.", "", 0);
+        return 1;
     }
 
     auto usrInputPtr = (uint8_t**)((DWORD64)baseAddr + usrInputOffset);
+    i = 0;
     while ((DWORD64)*usrInputPtr < (DWORD64)baseAddr || (DWORD64)*usrInputPtr > 0x800000000000LL)
     {//less than base address is possible but is unlikely
+        i++;
+        if (i > 60)
+        {
+            MessageBoxA(0, "Stutter fix failed. You may be running an unsupported version.", "", 0);
+            return 1;
+        }
         Sleep(500);
     }
     
@@ -268,13 +273,12 @@ DWORD WINAPI doPatching(LPVOID lpParam)
     if (*ptrFlag == 0)
     {
         *ptrFlag = 1;
-        good = true;
-    }
-    
-    if (good)
-    {
+
         //Beep(2000, 250); //annoying AF
         PlaySound(TEXT("SystemStart"), NULL, SND_SYNC);
+#if _DEBUG
+        printf("Patch success, i %d\r\n", i);
+#endif
     }
 
     return 0;
@@ -292,7 +296,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
         Game = DetermineGame();
         if (Game == GAME::UNKNOWN) {
             MessageBoxA(0, "Unable to determine game. Valid EXEs are darksouls.exe, darksoulsiii.exe, sekiro.exe, elden_ring.exe and start_protected_game.exe", "", 0);
-            break;
+            break; //game will likely crash without the real dinput8 being loaded, but that's okay.
         }
 
         SetupD8Proxy();
