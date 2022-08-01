@@ -1,6 +1,6 @@
 # FromStutterFix
 
-This tool will apply a fix for a certain type of stutter in FromSoft games.
+This tool will apply a fix for a certain type of stutter in FromSoft games. It will also disable achievements in Elden Ring, to work around a bug where achievements can freeze the game when Steam is offline.
 
 Only the current patch is supported for the moment.
 
@@ -35,6 +35,8 @@ Run the game without the fix, and try plugging/unplugging a USB dongle. If windo
 ## Does it break anything?
 
 I don't know. I haven't noticed any problems. If you actually use Steam Input, it might stop working. Replugging a controller still works for me.
+
+The achievement-disabling freeze fix will prevent you from getting any achievements, but you probably have them all by now anyway.
 
 ## This fixed my unplayable stutters that happened every 10 seconds!
 
