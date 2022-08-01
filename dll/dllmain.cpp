@@ -274,6 +274,30 @@ DWORD WINAPI doPatching(LPVOID lpParam)
     {
         *ptrFlag = 1;
 
+        if (Game == GAME::ELDENRING)
+        {
+            auto trophyImpPtr = (uint8_t***)((DWORD64)baseAddr + 0x44425B8); //CS::CSTrophyImp
+            i = 0;
+            while ((DWORD64)*trophyImpPtr < 0x700000000000LL || (DWORD64)*trophyImpPtr > 0x800000000000LL) //seems normal for this one to be below the base
+            {
+                i++;
+                if (i > 60)
+                {
+                    MessageBoxA(0, "Achievement disable failed.", "", 0);
+                    return 1;
+                }
+                Sleep(500);
+            }
+            auto ptrAchieve = (*(*trophyImpPtr + 1 /* +1 pointer ie. 8 bytes*/) + 0x4c);
+            if (*ptrAchieve == 1)
+            {
+                *ptrAchieve = 0;
+#if _DEBUG
+                printf("Achievements disabled, %d\r\n", i);
+#endif
+            }
+        }
+
         //Beep(2000, 250); //annoying AF
         PlaySound(TEXT("SystemStart"), NULL, SND_SYNC);
 #if _DEBUG
