@@ -88,12 +88,31 @@ namespace FromStutterFix
                         var state = ReadByte(handle, addr);
                         if (state == 1)
                         {
-                            Console.WriteLine("Flag already set");
-                            CloseHandle(handle);
-                            break;
+                            Console.WriteLine("Stutter fix: Flag already set");
                         }
-                        WriteByte(handle, addr, 1);
-                        Console.WriteLine("Flag set");
+                        else
+                        {
+                            WriteByte(handle, addr, 1);
+                            Console.WriteLine("Stutter fix: Flag set");
+                        }
+
+                        if (game.exename == "eldenring")
+                        {
+                            const int trophyImpOffset = 0x44425B8; //CS::CSTrophyImp
+                            var ptr = ReadPtr(handle, baseAddr + trophyImpOffset) + 8;
+                            var ptr2 = ReadPtr(handle, ptr) + 0x4c;
+                            state = ReadByte(handle, ptr2);
+                            if (state == 0)
+                            {
+                                Console.WriteLine("Achievements already disabled");
+                            }
+                            else
+                            {
+                                WriteByte(handle, ptr2, 0);
+                                Console.WriteLine("Achivements disabled");
+                            }
+                        }
+
                         CloseHandle(handle);
                     }
                 }
