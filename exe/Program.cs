@@ -46,7 +46,7 @@ namespace FromStutterFix
         {
             new Game(){ exename = "darksoulsiii", ptrAddr = 0x494E9D8, offset = 0x24b }, //1.15
             new Game(){ exename = "sekiro", ptrAddr = 0x3F42B28, offset = 0x23b }, //1.06
-            new Game(){ exename = "eldenring", ptrAddr = 0x44F5828, offset = 0x88b }, //1.05
+            new Game(){ exename = "eldenring", ptrAddr = 0x45075C8, offset = 0x88b }, //1.06
         };
 
         public void run()
@@ -98,7 +98,7 @@ namespace FromStutterFix
 
                         if (game.exename == "eldenring")
                         {
-                            const int trophyImpOffset = 0x44425B8; //CS::CSTrophyImp
+                            const int trophyImpOffset = 0x4453838; //CS::CSTrophyImp, 1.06
                             var ptr = ReadPtr(handle, baseAddr + trophyImpOffset) + 8;
                             var ptr2 = ReadPtr(handle, ptr) + 0x4c;
                             state = ReadByte(handle, ptr2);
