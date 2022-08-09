@@ -245,8 +245,8 @@ DWORD WINAPI doPatching(LPVOID lpParam)
         flagOffset = 0x23b;
     }
     else if (Game == GAME::ELDENRING) {
-        //for 1.05. TODO: support or at least recognise other patches
-        usrInputOffset = 0x44F5828;
+        //for 1.06. TODO: support or at least recognise other patches
+        usrInputOffset = 0x45075C8;
         flagOffset = 0x88b;
     }
 
@@ -276,7 +276,7 @@ DWORD WINAPI doPatching(LPVOID lpParam)
 
         if (Game == GAME::ELDENRING)
         {
-            auto trophyImpPtr = (uint8_t***)((DWORD64)baseAddr + 0x44425B8); //CS::CSTrophyImp
+            auto trophyImpPtr = (uint8_t***)((DWORD64)baseAddr + 0x4453838); //CS::CSTrophyImp, 1.06.
             i = 0;
             while ((DWORD64)*trophyImpPtr < 0x700000000000LL || (DWORD64)*trophyImpPtr > 0x800000000000LL) //seems normal for this one to be below the base
             {
