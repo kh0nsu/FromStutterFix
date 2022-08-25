@@ -44,7 +44,7 @@ namespace FromStutterFix
 
         List<Game> games = new List<Game>()
         {
-            new Game(){ exename = "darksoulsiii", ptrAddr = 0x494E9D8, offset = 0x24b }, //1.15
+            new Game(){ exename = "darksoulsiii", ptrAddr = 0x49644C8, offset = 0x24b }, //1.15.1
             new Game(){ exename = "sekiro", ptrAddr = 0x3F42B28, offset = 0x23b }, //1.06
             new Game(){ exename = "eldenring", ptrAddr = 0x45075C8, offset = 0x88b }, //1.06
         };
