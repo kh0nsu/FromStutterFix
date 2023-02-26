@@ -7,7 +7,7 @@ Supported patches:
 * Sekiro 1.06
 * Elden Ring 1.06
 
-If you run a newer patch of Elden Ring, using ertool is the only option. ertool will search for the required addresses so it should work on any patch and likely newer patches too.
+If you run a newer patch of Elden Ring, using ertool is the only option. ertool will search for the required addresses so it should work on any patch and likely newer patches too. You can close it immediately after enabling the options to be sure it has no further impact on the game.
 
 ## Usage
 
