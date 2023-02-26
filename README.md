@@ -1,8 +1,13 @@
-# FromStutterFix
+# FromStutterFix (kinda dead sorry)
 
 This tool will apply a fix for a certain type of stutter in FromSoft games. It will also disable achievements in Elden Ring, to work around a bug where achievements can freeze the game when Steam is offline.
 
-Only the current patch is supported for the moment.
+Supported patches:
+* DS3 1.15.1
+* Sekiro 1.06
+* Elden Ring 1.06
+
+If you run a newer patch of Elden Ring, using ertool is the only option. ertool will search for the required addresses so it should work on any patch and likely newer patches too.
 
 ## Usage
 
