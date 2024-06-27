@@ -1,4 +1,9 @@
-# FromStutterFix (kinda dead sorry)
+## Updated fork available!
+There's a fork available at https://github.com/t0mtee/FromStutterFixUpdated which is being maintained so use that instead!
+Alternatively, enable the fix with ertool, available at https://github.com/kh0nsu/EldenRingTool
+This is a good option if you're downpatching or if a new patch comes out and you can't wait for an update as ertool will scan through the game and should work with any patch.
+
+## FromStutterFix (Outdated)
 
 This tool will apply a fix for a certain type of stutter in FromSoft games. It will also disable achievements in Elden Ring, to work around a bug where achievements can freeze the game when Steam is offline.
 
