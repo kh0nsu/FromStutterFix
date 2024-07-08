@@ -1,9 +1,8 @@
 #include <Windows.h>
 #include <iostream>
 
-typedef DWORD64(__stdcall *DIRECTINPUT8CREATE)(HINSTANCE, DWORD, REFIID, LPVOID *, LPUNKNOWN);
+typedef HRESULT(__stdcall *DIRECTINPUT8CREATE)(HINSTANCE, DWORD, REFIID, LPVOID *, LPUNKNOWN);
 DIRECTINPUT8CREATE fpDirectInput8Create;
-//TODO: fix type mismatch between DWORD64 and HRESULT?
 extern "C" __declspec(dllexport)  HRESULT __stdcall DirectInput8Create(
     HINSTANCE hinst,
     DWORD dwVersion,
@@ -20,6 +19,11 @@ void SetupD8Proxy() {
     GetSystemDirectoryA(syspath, 320);
     strcat_s(syspath, "\\dinput8.dll");
     auto hMod = LoadLibraryA(syspath);
+    if (0 == hMod)
+    {
+        MessageBoxA(0, "Could not setup DINPUT8 proxy.", "", 0);
+        return;
+    }
     fpDirectInput8Create = (DIRECTINPUT8CREATE)GetProcAddress(hMod, "DirectInput8Create");
 }
 
