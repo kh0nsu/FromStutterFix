@@ -20,6 +20,10 @@ Run the game. After a delay, a chime sound will be played if the fix was applied
 
 It's obsolete as most people were using the DLL.
 
+## What happend to no logo/achievement fix?
+
+These were dropped in order to simplify the mod and most people just want the stutters gone. Separate mods can still be used.
+
 ## How does it work?
 
 The game gets a message from Windows ("WM_DEVICECHANGE") saying that something changed. The game then will re-scan for any controllers ("EnumDevices"), even if the device is not your controller. The game stops rendering frames until this is done, and it can take up to a second on some PCs. Steam hooks into this process too which probably doesn't help.
