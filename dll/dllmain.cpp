@@ -1,6 +1,8 @@
 #include <Windows.h>
 #include <iostream>
 
+volatile bool gameIsAlive = false; //this is hacky but it's non-essential
+
 typedef HRESULT(__stdcall *DIRECTINPUT8CREATE)(HINSTANCE, DWORD, REFIID, LPVOID *, LPUNKNOWN);
 DIRECTINPUT8CREATE fpDirectInput8Create;
 extern "C" __declspec(dllexport)  HRESULT __stdcall DirectInput8Create(
@@ -11,6 +13,7 @@ extern "C" __declspec(dllexport)  HRESULT __stdcall DirectInput8Create(
     LPUNKNOWN punkOuter
 )
 {
+    gameIsAlive = true;
     return fpDirectInput8Create(hinst, dwVersion, riidltf, ppvOut, punkOuter);
 }
 
@@ -36,7 +39,17 @@ int patchLength = 7;
 
 DWORD WINAPI doPatching(LPVOID lpParam)
 {
-    Sleep(10000); //wait for exe to deobfuscate (mainly sekiro) and scan controllers at least once
+    //we need to wait for the game to fully load/deobfuscate and scan controllers
+    //if loaded as dinput8, we'll know this because the create hook was hit
+    //otherwise we'll just wait up to 15 seconds
+    //TODO: consider checking if the game window has opened instead. this will happen after loading but before the scan
+    //alternatively, we could hook EnumDevices itself, but steam also hooks this and it seems more likely to crash the game
+    for (int i = 0; i < 15; i++)
+    {
+        if (gameIsAlive) { break; }
+        Sleep(1000);
+    }
+    Sleep(1500); //wait a bit longer as the scan may not have run immediately, though it's safe to patch if the scan is already underway.
 
     bool success = false;
 
@@ -48,17 +61,18 @@ DWORD WINAPI doPatching(LPVOID lpParam)
     if (pNtHeaders->Signature != IMAGE_NT_SIGNATURE) { return 1; }
     auto pSectionHeader = IMAGE_FIRST_SECTION(pNtHeaders);
 
+    //int patchCount = 0;
     for (auto i = 0; i < pNtHeaders->FileHeader.NumberOfSections; i++, pSectionHeader++)
     {
         if (strncmp((char*)pSectionHeader->Name, ".text", IMAGE_SIZEOF_SHORT_NAME) == 0)
         {
             BYTE* sectionStart = (BYTE*)hModule + pSectionHeader->VirtualAddress;
-            DWORD sectionSize = pSectionHeader->Misc.VirtualSize;
+            int sectionSize = (int)pSectionHeader->Misc.VirtualSize;
 
-            for (DWORD j = 0; j < sectionSize - patternlength + 1; ++j)
+            for (int j = 0; j < sectionSize - patternlength + 1; ++j)
             {
                 bool found = true;
-                for (size_t k = 0; k < patternlength; ++k)
+                for (int k = 0; k < patternlength; ++k)
                 {
                     if (!mask[k] && sectionStart[j + k] != aob[k])
                     {
@@ -76,7 +90,10 @@ DWORD WINAPI doPatching(LPVOID lpParam)
                     VirtualProtect(patchAddr, patchLength, oldFlags, &oldFlags);
 
                     success = true;
-                    break; //AC6 may need this patched in two places but i don't have the game
+                    
+                    //patchCount++;
+                    //if (patchCount >= 2) { break; } //AC6 can be patched in two places, but this is untested
+                    break; //for now just break on first match
                 }
             }
         }
