@@ -101,7 +101,7 @@ DWORD WINAPI doPatching(LPVOID lpParam)
 
     if (!success)
     {
-        MessageBoxA(0, "Stutter fix failed. You may be running an unsupported version.", "", 0);
+        MessageBoxA(0, "FromStutterFix failed. You may be running an unsupported version.", "", 0);
         return 1;
     }
 
